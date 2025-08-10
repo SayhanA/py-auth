@@ -159,3 +159,20 @@ def resend_verification_email():
     except Exception as e:
         print(f"Failed to resend verification email: {str(e)}")
         return jsonify({"error": "Failed to resend verification email"}), 500
+      
+      
+def check_verification_status():
+    email = request.args.get('email')
+    
+    if not email:
+        return jsonify({"error": "Email parameter is required"}), 400
+
+    user = find_user_by_email(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "email": user["email"],
+        "isVerified": user.get("isVerified", False),
+        "message": "User is verified" if user.get("isVerified", False) else "User is not verified"
+    }), 200

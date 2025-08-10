@@ -19,6 +19,10 @@ app.add_url_rule('/resend-verification',
                 view_func=user_controller.resend_verification_email, 
                 methods=['POST'])
 
+app.add_url_rule('/check-verification', 
+                view_func=user_controller.check_verification_status, 
+                methods=['GET'])
+
 import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
