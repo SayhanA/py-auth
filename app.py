@@ -23,7 +23,24 @@ app.add_url_rule('/check-verification',
                 view_func=user_controller.check_verification_status, 
                 methods=['GET'])
 
+app.add_url_rule('/forgot-password', 
+                view_func=user_controller.forgot_password, 
+                methods=['POST'])
+
+app.add_url_rule('/verify-reset-code', 
+                view_func=user_controller.verify_reset_code, 
+                methods=['POST'])
+
+app.add_url_rule('/reset-password', 
+                view_func=user_controller.reset_password, 
+                methods=['POST'], endpoint='reset_password')
+
+
 import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
