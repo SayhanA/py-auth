@@ -12,46 +12,17 @@ def register_user():
         return jsonify({"error": "User already exists"}), 409
 
     verification_token = create_user(data["name"], data["email"], data["password"])
-    
+
     # Send verification email with HTML template
     verification_url = url_for('verify_email', token=verification_token, _external=True)
-    
+
     msg = Message(
         "Verify Your Email - Thinkers Flutter Developer Task App",
         recipients=[data["email"]]
     )
-    
-    msg.html = f"""
-    <html>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background-color: #f8f9fa; padding: 30px; border-radius: 8px;">
-          <h2 style="color: #2c3e50; text-align: center;">Welcome to Thinkers Flutter Developer Task App!</h2>
-          <p style="text-align: center;">Thank you for registering. Please verify your email address to get started.</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="{verification_url}" 
-               style="background-color: #4285f4; color: white; padding: 12px 24px; 
-                      text-decoration: none; border-radius: 4px; font-weight: bold;
-                      display: inline-block;">
-              Verify Email Address
-            </a>
-          </div>
-          
-          <p style="text-align: center; font-size: 12px; color: #777;">
-            If you didn't request this, please ignore this email. The link will expire in 24 hours.
-          </p>
-          
-          <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; text-align: center;">
-            <p style="font-size: 12px; color: #777;">
-              Thinkers Flutter Developer Team<br>
-              <a href="https://yourwebsite.com" style="color: #4285f4;">https://yourwebsite.com</a>
-            </p>
-          </div>
-        </div>
-      </body>
-    </html>
-    """
-    
+
+    msg.html = render_template("verification_email.html", verification_url=verification_url)
+
     # Plain text fallback
     msg.body = f"""
     Welcome to Thinkers Flutter Developer Task App!
@@ -64,7 +35,7 @@ def register_user():
     Thinkers Flutter Developer Team
     https://yourwebsite.com
     """
-    
+
     try:
         mail.send(msg)
         return jsonify({"message": "User registered successfully! Please check your email to verify your account."}), 201
@@ -72,7 +43,7 @@ def register_user():
         # Log the error and inform the user
         print(f"Failed to send verification email: {str(e)}")
         return jsonify({"message": "User registered successfully! We couldn't send the verification email. Please contact support."}), 201
-
+    
 def login_user():
     data = request.json
     if not data or not all(k in data for k in ("email", "password")):
@@ -122,30 +93,7 @@ def resend_verification_email():
         recipients=[data["email"]]
     )
     
-    msg.html = f"""
-    <html>
-      <!-- Same HTML template as your register email -->
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background-color: #f8f9fa; padding: 30px; border-radius: 8px;">
-          <h2 style="color: #2c3e50; text-align: center;">Verify Your Email</h2>
-          <p style="text-align: center;">Here's your new verification link:</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="{verification_url}" 
-               style="background-color: #4285f4; color: white; padding: 12px 24px; 
-                      text-decoration: none; border-radius: 4px; font-weight: bold;
-                      display: inline-block;">
-              Verify Email Address
-            </a>
-          </div>
-          
-          <p style="text-align: center; font-size: 12px; color: #777;">
-            If you didn't request this, please ignore this email. The link will expire in 24 hours.
-          </p>
-        </div>
-      </body>
-    </html>
-    """
+    msg.html = render_template('resendVerification_email.html', verification_url=verification_url, message_text="Here's your new verification link:")
     
     msg.body = f"""
     Verify your email by clicking this link:
@@ -234,12 +182,10 @@ def verify_reset_code():
 
 def reset_password():
     data = request.json
-    print('--------------------------------------------------------------------------------------------------------------')
     if not data or "code" not in data or "new_password" not in data:
         return jsonify({"error": "Code and new password are required"}), 400
 
     user = find_user_by_reset_code(data["code"])
-    print(user)
     if not user:
         return jsonify({"error": "Invalid or expired code"}), 400
 
