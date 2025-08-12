@@ -28,7 +28,7 @@ It handles **user registration, login, email verification, password reset,** and
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the repository
-```bash
+
 git clone https://github.com/SayhanA/py-auth.git
 cd your-repo
 
