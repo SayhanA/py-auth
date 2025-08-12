@@ -1,6 +1,7 @@
 from flask import request, jsonify, url_for
 from models.user_model import create_user, find_user_by_email, verify_user, verify_user_by_token, mail, generate_reset_code, find_user_by_reset_code, clear_reset_code, update_password
 from flask_mail import Message
+from flask import render_template
 
 def register_user():
     data = request.json
@@ -95,7 +96,9 @@ def login_user():
 
 def verify_email(token):
     if verify_user_by_token(token):
-        return jsonify({"message": "Email verified successfully!"}), 200
+        return render_template('verify_success.html'), 200
+
+    return render_template('verify_failed.html'), 400
     return jsonify({"error": "Invalid or expired verification token"}), 400
 
 def resend_verification_email():

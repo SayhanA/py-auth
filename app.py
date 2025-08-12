@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 from models import user_model
 from controllers import user_controller
@@ -10,6 +10,8 @@ app.config.from_object(Config)
 # Initialize Mongo and Mail in models
 user_model.set_mongo(app)
 CORS(app)
+
+app = Flask(__name__, template_folder='views')
 
 # Routes
 app.add_url_rule('/register', view_func=user_controller.register_user, methods=['POST'])
@@ -36,11 +38,11 @@ app.add_url_rule('/reset-password',
                 methods=['POST'], endpoint='reset_password')
 
 
-import os
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+# import os
+# if __name__ == "__main__":
+#     port = int(os.environ.get("PORT", 5000))
+#     app.run(host="0.0.0.0", port=port)
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
