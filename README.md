@@ -10,6 +10,11 @@ It handles **user registration, login, email verification, password reset,** and
 
 ---
 
+## 🚀 Postman Collection
+**Drive Link:** *https://drive.google.com/file/d/1hah8M0WJxu9BLjhCe7YjiR6Tr_-LHzMe/view?usp=sharing*
+
+---
+
 ## 📂 Project Structure
     ├── app.py # Main Flask app entry point
 ├── config.py # Configuration file (loads environment variables)
